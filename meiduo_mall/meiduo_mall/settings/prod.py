@@ -1,3 +1,4 @@
+# 生产环境配置文件
 """
 Django settings for meiduo_mall project.
 
