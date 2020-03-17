@@ -31,7 +31,8 @@ SECRET_KEY = 'ug6-3kv#tkwr30s$o0oo&zopddubwlis-kc)8d7q&*dz66@t0c'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# 指定自定义的模型类
+AUTH_USER_MODEL = 'users.User'
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "users",  # 用户模块 这种写法要追加导包路劲
     # "meiduo_mall.apps.users"  # 用户模块
-
 ]
 
 MIDDLEWARE = [
@@ -75,7 +75,7 @@ ROOT_URLCONF = 'meiduo_mall.urls'
 # ]
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2',  # 配置jinja2模板引擎
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',  # 配置jinja2模板引擎
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
