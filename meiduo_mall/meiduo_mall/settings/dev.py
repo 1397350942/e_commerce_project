@@ -15,14 +15,18 @@ import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+print(BASE_DIR)
+# 查看导包路劲
+print(sys.path)
+# 追加导包路劲 指向apps
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+print(sys.path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'ug6-3kv#tkwr30s$o0oo&zopddubwlis-kc)8d7q&*dz66@t0c'
-# 查看导包路劲
-# print(sys.path)
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -37,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "meiduo_mall.apps.users"  # 用户模块
+    "users",  # 用户模块 这种写法要追加导包路劲
+    # "meiduo_mall.apps.users"  # 用户模块
+
 ]
 
 MIDDLEWARE = [
