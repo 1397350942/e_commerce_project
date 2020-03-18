@@ -15,12 +15,12 @@ import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(BASE_DIR)
+# print(BASE_DIR)
 # 查看导包路劲
-print(sys.path)
+# print(sys.path)
 # 追加导包路劲 指向apps
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-print(sys.path)
+# print(sys.path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "users",  # 用户模块 这种写法要追加导包路劲
     # "meiduo_mall.apps.users"  # 用户模块
+    "contents",  # 首页广告模块
 ]
 
 MIDDLEWARE = [
