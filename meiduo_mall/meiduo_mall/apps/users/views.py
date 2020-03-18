@@ -4,11 +4,26 @@ from django import http
 from django.urls import reverse
 import re
 from django.db import DatabaseError
+from django.contrib.auth import login
 
 from users.models import User
+from meiduo_mall.utils.response_code import RETCODE
 
 
 # Create your views here.
+class UsernameCountView(View):
+    def get(self, request, username):
+        """
+        :param username: 用户名
+        :return: JSON
+        """
+        # 接收和校验参数
+        # 实现主体业务逻辑: 使用username查询对应的记录的条数
+        count = User.objects.filter(username=username).count()
+        # 响应结果
+        return http.JsonResponse({"count": count, "code": RETCODE.OK, "errmsg": "OK"})
+
+
 class RegisterView(View):
     """用户注册"""
 
@@ -46,9 +61,11 @@ class RegisterView(View):
         # 三、保存注册数据: 是注册业务的核心
         # return render(request, 'register.html', {"register_errmsg": "注册失败"})
         try:
-            User.objects.create_user(username=username, password=password, mobile=mobile)
+            user = User.objects.create_user(username=username, password=password, mobile=mobile)
         except DatabaseError:
             return render(request, 'register.html', {"register_errmsg": "注册失败"})
+        # 实现状态保持
+        login(request, user)
         # 四、响应结果:重定向到首页
         # return http.HttpResponse("注册成功,重定向到导首页")
         # return redirect('/')
