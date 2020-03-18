@@ -2,6 +2,7 @@
 // 创建一个vue对象
 let vm = new Vue({
     el: '#app',//通过ID选择器找到绑定的HTML内容
+    delimiters: ["[[", "]]"],
     data: { // 数据对象
         // v-model
         username: "",
@@ -72,7 +73,16 @@ let vm = new Vue({
         },
         // 监听表单提交事件
         on_submit() {
-
+            this.check_username();
+            this.check_password();
+            this.check_password2();
+            this.check_mobile();
+            this.check_allow();
+            // 在校验之后,注册数据中,只要有错误,就禁用掉表单的提交事件
+            if (this.error_name == true || this.error_password == true || this.error_password2 == true || this.error_mobile == true || this.error_allow == true) {
+                // 禁用表单的提交事件
+                window.event.returnValue = false;
+            }
         },
     }
 
