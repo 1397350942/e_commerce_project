@@ -13,6 +13,8 @@ let vm = new Vue({
         image_code_url: "",
         uuid: "",
         image_code: "",
+        sms_code_tip: "获取短信验证码",
+        send_flag: false,
         // v-show
         error_name: false,
         error_password: false,
@@ -30,6 +32,59 @@ let vm = new Vue({
         this.generate_image_code()
     },
     methods: {//定义和实现事件方法
+        // 发送短信验证码
+        send_sms_code() {
+            // 避免恶意用户频繁点击获取短信验证码的标签
+            if (this.send_flag == true) {
+                return;
+            }
+            this.send_flag = true;
+            // 校验数据: mobile image_code
+            this.check_mobile();
+            this.check_image_code();
+            if (this.error_mobile == true || this.error_image_code == true) {
+                this.send_flag = false;
+                return;
+            }
+            let url = '/sms_codes/' + this.mobile + '/?image_code=' + this.image_code + '&uuid=' + this.uuid;
+
+            axios.get(url, {
+                responseType: 'json'
+            })
+                .then(response => {
+                    if (response.data.code == "0") {
+                        // 展示倒计时60S效果
+                        let num = 60;
+                        // 初始化定时器
+                        let t = setInterval(() => {
+                            if (num == 1) {// 倒计时即将结束
+                                // 停止回调函数的执行
+                                clearInterval(t);
+                                // 还原sms_code_tip提示文字
+                                this.sms_code_tip = "获取短信验证码";
+                                // 重新生成图形验证码
+                                this.generate_image_code();
+                                this.send_flag = false;
+                            } else {
+                                num -= 1;
+                                this.sms_code_tip = num + "秒"
+                            }
+
+                        }, 1000)
+
+                    } else {// 错误
+                        if (response.data.code == "4001") {// 图形验证码错误
+                            this.error_image_code_message = response.data.errmsg;
+                            this.error_image_code = true;
+                            this.send_flag = false;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    this.send_flag = false;
+                })
+        },
         // 生成图形验证码的方法: 封装的思想、方便代码的调用
         generate_image_code() {
             this.uuid = generateUUID();
