@@ -68,11 +68,18 @@ class SMSCodeView(View):
         # 4) 生成短信验证码: 随机6位数字
         sms_code = "%06d" % random.randint(0, 999999)
         logger.info(sms_code)  # 手动输出日志,记录短信验证码
-        # 5) 保存短信验证码
-        redis_conn.setex("sms_%s" % mobile, constants.SMS_CODE_REDIS_EXPIRES, sms_code)
 
+        # 创建redis管道--> 将命令添加到队列中 --> 执行
+        pl = redis_conn.pipeline()  # 创建redis管道
+        # 5) 保存短信验证码
+        pl.setex("sms_%s" % mobile, constants.SMS_CODE_REDIS_EXPIRES, sms_code)
         # 追加业务: 保存发送短信验证码的标记
-        redis_conn.setex("send_flag_%s" % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
+        pl.setex("send_flag_%s" % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
+        pl.execute()  # 执行
+        # # 5) 保存短信验证码
+        # redis_conn.setex("sms_%s" % mobile, constants.SMS_CODE_REDIS_EXPIRES, sms_code)
+        # # 追加业务: 保存发送短信验证码的标记
+        # redis_conn.setex("send_flag_%s" % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
 
         # 6）发送短信验证码
         CCP().send_template_sms(mobile, [sms_code, int(constants.SMS_CODE_REDIS_EXPIRES / 60)], 1)
