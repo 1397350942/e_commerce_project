@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "users",  # 用户模块 这种写法要追加导包路劲
     # "meiduo_mall.apps.users"  # 用户模块
     "contents",  # 首页广告模块
+    "verifications",  # 验证模块
 ]
 
 MIDDLEWARE = [
