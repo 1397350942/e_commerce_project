@@ -33,6 +33,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 # 指定自定义的模型类
 AUTH_USER_MODEL = 'users.User'
+# 指定自定义用户认证的后端
+AUTHENTICATION_BACKENDS = ["users.utils.UsernameMobileBackend"]
 # Application definition
 
 INSTALLED_APPS = [

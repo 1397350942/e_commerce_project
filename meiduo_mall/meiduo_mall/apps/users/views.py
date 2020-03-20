@@ -42,7 +42,6 @@ class LoginView(View):
         if remembered != "on":
             # 没有记住登录：状态保持在浏览器会话结束就销毁
             request.session.set_expiry(0)
-            pass
         else:
             # 记住登录: 状态保持周期为两周  默认两周,所以传None
             request.session.set_expiry(None)
