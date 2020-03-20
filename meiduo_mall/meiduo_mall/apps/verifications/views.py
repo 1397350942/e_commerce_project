@@ -7,6 +7,7 @@ import random, logging
 from . import constants
 from meiduo_mall.utils.response_code import RETCODE
 from verifications.libs.yuntongxun.ccp_sms import CCP
+from celery_tasks.sms.tasks import send_sms_code
 from verifications.libs.captcha.captcha import captcha
 
 # 创建日志输出器
@@ -82,6 +83,9 @@ class SMSCodeView(View):
         # redis_conn.setex("send_flag_%s" % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
 
         # 6）发送短信验证码
-        CCP().send_template_sms(mobile, [sms_code, int(constants.SMS_CODE_REDIS_EXPIRES / 60)], 1)
+        # CCP().send_template_sms(mobile, [sms_code, int(constants.SMS_CODE_REDIS_EXPIRES / 60)], 1)
+        # 使用celery发送短信验证码
+        # send_sms_code(mobile, sms_code) 这是错误的写法
+        send_sms_code.delay(mobile, sms_code)  # 千万不要忘记写delay
         # 7) 相应结果
         return http.JsonResponse({"code": RETCODE.OK, "errmsg": "发送短信成功"})
