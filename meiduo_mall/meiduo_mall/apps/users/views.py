@@ -6,9 +6,25 @@ import re
 from django.db import DatabaseError
 from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.models import User
 from meiduo_mall.utils.response_code import RETCODE
+
+
+class UserInfoView(LoginRequiredMixin, View):
+    """用户中心"""
+
+    def get(self, request):
+        """提供用户中心的页面"""
+        # if request.user.is_authenticated:
+        #     return render(request, 'user_center_info.html')
+        # else:
+        #     return redirect(reverse("users:login"))
+
+        # login_url = "/login/"
+        # redirect_field_name = ""
+        return render(request, 'user_center_info.html')
 
 
 # Create your views here.
@@ -58,8 +74,16 @@ class LoginView(View):
         else:
             # 记住登录: 状态保持周期为两周  默认两周,所以传None
             request.session.set_expiry(None)
-        # 为了实现再首页右上角展示用户名信息,我们需要将用户名信息缓存到cookie中
-        response = redirect(reverse("contents:index"))
+
+        # 先取出next
+        next = request.GET.get("next")
+        if next:
+            # 重定向到next
+            response = redirect(next)
+        else:
+            # 重定向到首页
+            # 为了实现再首页右上角展示用户名信息,我们需要将用户名信息缓存到cookie中
+            response = redirect(reverse("contents:index"))
         response.set_cookie("username", user.username, max_age=3600 * 24 * 15)
         # 响应结果: 重定向到首页
         # return redirect(reverse("contents:index"))

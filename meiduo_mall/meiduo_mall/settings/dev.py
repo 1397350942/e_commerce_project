@@ -31,11 +31,6 @@ SECRET_KEY = 'ug6-3kv#tkwr30s$o0oo&zopddubwlis-kc)8d7q&*dz66@t0c'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-# 指定自定义的模型类
-AUTH_USER_MODEL = 'users.User'
-# 指定自定义用户认证的后端
-AUTHENTICATION_BACKENDS = ["users.utils.UsernameMobileBackend"]
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -224,3 +219,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # 配置静态文件加载路劲
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# 指定自定义的模型类
+AUTH_USER_MODEL = 'users.User'
+# 指定自定义用户认证的后端
+AUTHENTICATION_BACKENDS = ["users.utils.UsernameMobileBackend"]
+# 判断用户是否登录后,指定未登录用户重定向的地址
+LOGIN_URL = "/login/"

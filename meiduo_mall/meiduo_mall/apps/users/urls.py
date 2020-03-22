@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .views import RegisterView, UsernameCountView, LoginView, LogoutView
+from .views import RegisterView, UsernameCountView, LoginView, LogoutView, UserInfoView
 
 urlpatterns = [
     # 用户注册
@@ -9,5 +9,7 @@ urlpatterns = [
     # 用户登录
     url(r'^login/$', LoginView.as_view(), name="login"),
     # 用户退出登录
-    url(r'^logout/$', LogoutView.as_view(), name="logout")
+    url(r'^logout/$', LogoutView.as_view(), name="logout"),
+    # 用户中心
+    url(r'^info/$', UserInfoView.as_view(), name="info")
 ]
