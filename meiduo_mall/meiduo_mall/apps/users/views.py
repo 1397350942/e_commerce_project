@@ -4,7 +4,7 @@ from django import http
 from django.urls import reverse
 import re
 from django.db import DatabaseError
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
 
 from users.models import User
@@ -12,6 +12,19 @@ from meiduo_mall.utils.response_code import RETCODE
 
 
 # Create your views here.
+class LogoutView(View):
+    """用户退出登录"""
+
+    def get(self, request):
+        """实现用户退出登录的逻辑"""
+        # 清除状态保持信息
+        logout(request)
+        # 删除cookies的用户名
+        response = redirect(reverse("contents:index"))
+        response.delete_cookie("username")
+        return response
+
+
 class LoginView(View):
     """用户登录"""
 
@@ -45,8 +58,12 @@ class LoginView(View):
         else:
             # 记住登录: 状态保持周期为两周  默认两周,所以传None
             request.session.set_expiry(None)
+        # 为了实现再首页右上角展示用户名信息,我们需要将用户名信息缓存到cookie中
+        response = redirect(reverse("contents:index"))
+        response.set_cookie("username", user.username, max_age=3600 * 24 * 15)
         # 响应结果: 重定向到首页
-        return redirect(reverse("contents:index"))
+        # return redirect(reverse("contents:index"))
+        return response
 
 
 class UsernameCountView(View):
@@ -114,7 +131,14 @@ class RegisterView(View):
             return render(request, 'register.html', {"register_errmsg": "注册失败"})
         # 实现状态保持
         login(request, user)
-        # 四、响应结果:重定向到首页
-        # return http.HttpResponse("注册成功,重定向到导首页")
-        # return redirect('/')
-        return redirect(reverse('contents:index'))
+        # # 四、响应结果:重定向到首页
+        # # return http.HttpResponse("注册成功,重定向到导首页")
+        # # return redirect('/')
+        # return redirect(reverse('contents:index'))
+
+        # 为了实现再首页右上角展示用户名信息,我们需要将用户名信息缓存到cookie中
+        response = redirect(reverse("contents:index"))
+        response.set_cookie("username", user.username, max_age=3600 * 24 * 15)
+        # 响应结果: 重定向到首页
+        # return redirect(reverse("contents:index"))
+        return response
