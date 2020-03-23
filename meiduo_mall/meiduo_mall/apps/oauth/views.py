@@ -51,6 +51,7 @@ class QQAuthUserView(View):
         else:
             # openid 已绑定商城用户 oauth_user.user 表示从QQ登录模型类中找到对应的用户模型类对象
             login(request, oauth_user.user)
+            # 从哪里来 QQ登录完了 回哪里去
             next = request.GET.get("state")
             response = redirect(next)
             response.set_cookie("username", oauth_user.user.username, max_age=3600 * 24 * 15)
@@ -107,7 +108,7 @@ class QQAuthUserView(View):
 
         # openid 已绑定商城用户 oauth_user.user 表示从QQ登录模型类中找到对应的用户模型类对象
         login(request, oauth_qq_user.user)
-        # 重定向到state
+        # 重定向到state: 从哪里来 QQ登录完了 回哪里去
         next = request.GET.get("state")
         response = redirect(next)
         response.set_cookie("username", oauth_qq_user.user.username, max_age=3600 * 24 * 15)
