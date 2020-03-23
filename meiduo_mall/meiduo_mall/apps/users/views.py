@@ -24,7 +24,15 @@ class UserInfoView(LoginRequiredMixin, View):
 
         # login_url = "/login/"
         # redirect_field_name = ""
-        return render(request, 'user_center_info.html')
+
+        # 如果LoginRequiredMixin判断出用户已经登录  那么 request.user 就是登录用户的对象
+        context = {
+            "username": request.user.username,
+            "mobile": request.user.mobile,
+            "email": request.user.email,
+            "email_active": request.user.email_active
+        }
+        return render(request, 'user_center_info.html', context)
 
 
 # Create your views here.
